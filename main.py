@@ -15,6 +15,8 @@ from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import classification_report, confusion_matrix
 
+from keras.models import load_model
+
 # load  the data
 # X = images, y = labels
 
@@ -135,3 +137,27 @@ model.summary()
 early_stop = EarlyStopping(monitor='val-loss', patience=2)
 
 # data augmentations
+batch_size = 32
+data_generator = ImageDataGenerator(width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True)
+train_generator = data_generator.flow(X_train, y_cat_train, batch_size)
+steps_per_epoch = X_train.shape[0] // batch_size
+
+r = model.fit(train_generator,
+              epochs=50,
+              steps_per_epoch=steps_per_epoch,
+              validation_data=(X_test, y_cat_test),
+            #   callbacks=[early_stop],
+            #   batch_size=batch_size
+              )
+
+# model evaluation
+
+
+
+# DenseNet model for image classification
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+# saving model in a file
+model.save('cnn_20_epochs.h5')
