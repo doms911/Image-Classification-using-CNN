@@ -74,3 +74,52 @@ plt.show()
 
 # data preprocessing 
 
+# scaling the date
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+
+# transform target variable into one-hotenconding
+
+y_cat_train = to_categorical(y_train, 10)
+y_cat_test = to_categorical(y_test, 10)
+
+print(y_cat_train)
+
+# MODEL BUILDING
+
+INPUT_SHAPE = (32, 32, 3)
+KERNEL_SIZE = (3, 3)
+model = Sequential()
+
+# convolutional layer
+model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+
+# pooling layer
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+# dropout layers
+model.add(Dropout(0.25))
+
+model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPool2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+# model.add(Dropout(0.2))
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.25))
+model.add(Dense(10, activation='softmax'))
+
+METRICS = [
+    'accuracy',
+    tf.keras.metrics.Precision(name='precision'),
+    tf.keras.metrics.Recall(name='recall')
+]
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=METRICS)
+
