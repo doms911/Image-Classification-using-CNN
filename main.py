@@ -103,9 +103,16 @@ model.add(MaxPool2D(pool_size=(2, 2)))
 # dropout layers
 model.add(Dropout(0.25))
 
-model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(Conv2D(filters=64, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
 model.add(BatchNormalization())
-model.add(Conv2D(filters=32, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(Conv2D(filters=64, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPool2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(filters=128, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(filters=128, kernel_size=KERNEL_SIZE, input_shape=INPUT_SHAPE, activation='relu', padding='same'))
 model.add(BatchNormalization())
 model.add(MaxPool2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
@@ -122,4 +129,9 @@ METRICS = [
     tf.keras.metrics.Recall(name='recall')
 ]
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=METRICS)
+model.summary()
 
+# early stopping
+early_stop = EarlyStopping(monitor='val-loss', patience=2)
+
+# data augmentations
